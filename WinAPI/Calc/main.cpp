@@ -98,11 +98,22 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static CONST CHAR DEFAULT_SKIN[] = "square_green";
 	static CHAR skin[MAX_PATH]{};
 	static COLOR color_scheme = COLOR::BLUE;
+	static HMODULE hSkin = NULL;
 
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
+		//C:\\Users\\roman\\source\\repos\\PD_311_WIN\\WinAPI\\x64\\Debug\\
+		
+	/*	hSkin = LoadLibrary("metal_mistral.dll");
+		HANDLE hImage=LoadImageA(hSkin, MAKEINTRESOURCE(0), IMAGE_BITMAP,
+			g_i_BUTTON_SIZE,
+			g_i_BUTTON_SIZE,
+			LR_LOADFROMFILE
+		);*/
+
+		/////////////////////////////////////////////
 		RECT rectWindow;
 		RECT rectClient;
 		GetWindowRect(hwnd, &rectWindow);
@@ -487,7 +498,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	}
 	break;
-	case WM_DESTROY:PostQuitMessage(0); break;
+	case WM_DESTROY:FreeLibrary(hSkin);PostQuitMessage(0); break;
 	case WM_CLOSE:	DestroyWindow(hwnd); break;
 	default:		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
