@@ -107,7 +107,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			hwnd, (HMENU)IDC_EDIT_DISPLAY,
 			NULL, NULL
 		);
-
+		AddFontResourceEx("Fonts\\digital-7.ttf", FR_PRIVATE, 0);
 		HFONT hFont = CreateFont
 		(
 			g_i_FONT_HEIGHT, g_i_FONT_WIDTH /**/,
@@ -120,9 +120,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			OUT_CHARACTER_PRECIS,
 			CLIP_CHARACTER_PRECIS,
 			ANTIALIASED_QUALITY,DEFAULT_PITCH|FF_DONTCARE,
-			"Tahoma"
-			);
+			"digital-7"
+		);
 		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, true);
+		
+		
 		////////////////////// Digits: //////////////////////////
 		INT digit = 0;
 		CHAR sz_digit[2]{};
