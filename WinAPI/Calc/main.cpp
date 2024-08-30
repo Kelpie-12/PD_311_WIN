@@ -9,12 +9,14 @@ CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
 
-CONST INT g_i_BUTTON_SIZE = 50;
+CONST INT g_i_BUTTON_SIZE = 64;
 CONST INT g_i_INTERVAL = 5;
 CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 
 CONST INT g_i_DISPLAY_WIDTH = (g_i_BUTTON_SIZE + g_i_INTERVAL) * 5;
-CONST INT g_i_DISPLAY_HEIGHT = 22;
+CONST INT g_i_DISPLAY_HEIGHT = 64;
+CONST INT g_i_FONT_HEIGHT = g_i_DISPLAY_HEIGHT - 2;
+CONST INT g_i_FONT_WIDTH = g_i_DISPLAY_HEIGHT /2.5;
 
 CONST INT g_i_TITLE_HEIGHT = 39;
 CONST INT g_i_WINDOW_WIDTH = g_i_DISPLAY_WIDTH + g_i_START_X * 2 + 16;
@@ -99,12 +101,28 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HWND hDisplay = CreateWindowEx
 		(
 			NULL, "Edit", "0",
-			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT | ES_READONLY,
+			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER | ES_RIGHT ,
 			g_i_START_X, g_i_START_Y,
 			g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGHT,
 			hwnd, (HMENU)IDC_EDIT_DISPLAY,
 			NULL, NULL
 		);
+
+		HFONT hFont = CreateFont
+		(
+			g_i_FONT_HEIGHT, g_i_FONT_WIDTH /**/,
+			0,0,
+			500,
+			FALSE,
+			FALSE,
+			FALSE,
+			DEFAULT_CHARSET,
+			OUT_CHARACTER_PRECIS,
+			CLIP_CHARACTER_PRECIS,
+			ANTIALIASED_QUALITY,DEFAULT_PITCH|FF_DONTCARE,
+			"Tahoma"
+			);
+		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, true);
 		////////////////////// Digits: //////////////////////////
 		INT digit = 0;
 		CHAR sz_digit[2]{};
@@ -138,6 +156,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
+
 		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
 		/*HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\button_0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
 		if (hImageDigit0 == NULL)
@@ -232,9 +251,6 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
-
-
-
 	}
 	break;
 	case WM_COMMAND:
@@ -403,7 +419,6 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case VK_ESCAPE:		SendMessage(GetDlgItem(hwnd, IDC_BUTTON_CLEAR), BM_SETSTATE, TRUE, 0); break;
 		case VK_RETURN:		SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0); break;
 		}
-
 	}
 	break;
 	case WM_CTLCOLOREDIT:
@@ -414,8 +429,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
 		SetTextColor(hdc, RGB(255, 0, 0));
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
-		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
+		//SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+		//SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");
 		////////////////////////////////////////////////////////////////
 		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 		HDC hdcEditDisplay = GetDC(hEditDisplay);
