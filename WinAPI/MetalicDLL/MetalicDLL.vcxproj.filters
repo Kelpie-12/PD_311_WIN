@@ -25,69 +25,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="square_blue_full\button_0.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_0_raw.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_3.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_4.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_5.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_6.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_7.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_8.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_9.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_aster.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_bsp.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_clr.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_equal.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_minus.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_plus.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_slash.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square_blue_full\button_point.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Icon\calcXP.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="metal_mistral\button_point.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="metal_mistral\button_0.bmp">
       <Filter>Resource Files</Filter>
     </Image>
@@ -134,6 +71,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="metal_mistral\button_plus.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="metal_mistral\button_point.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="metal_mistral\button_slash.bmp">
