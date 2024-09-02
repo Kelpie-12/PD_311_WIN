@@ -3,8 +3,8 @@
 #include<limits>
 #include<stdio.h>
 #include"resource.h"
-#include <vector>
-
+#include <string>
+//https://github.com/northern/Win32Bitmaps/tree/master
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
 CONST INT g_i_START_X = 10;
@@ -95,6 +95,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 
 VOID SetSkin(HWND hwnd, HINSTANCE &hSkin);
+VOID SetFonts(HWND &hwnd, LPSTR  fonts, HFONT &hFont);
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -104,6 +105,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static CONST CHAR DEFAULT_SKIN[] = "square_green";
 	static CHAR skin[MAX_PATH]{};
 	static COLOR color_scheme = COLOR::BLUE;
+	static HFONT hFont;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -127,23 +129,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			hwnd, (HMENU)IDC_EDIT_DISPLAY,
 			NULL, NULL
 		);
-		AddFontResourceEx("Fonts\\digital-7.ttf", FR_PRIVATE, 0);
-		HFONT hFont = CreateFont
-		(
-			g_i_FONT_HEIGHT, g_i_FONT_WIDTH /**/,
-			0, 0,
-			500,
-			FALSE,
-			FALSE,
-			FALSE,
-			DEFAULT_CHARSET,
-			OUT_CHARACTER_PRECIS,
-			CLIP_CHARACTER_PRECIS,
-			ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
-			"digital-7"
-		);
-		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, true);
-
+		
+		SetFonts(hwnd, (LPSTR)"digital-7",hFont);	
 
 		////////////////////// Digits: //////////////////////////
 		INT digit = 0;
@@ -453,9 +440,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HMENU hMainMenu = CreatePopupMenu();
 		HMENU hSubMenu = CreatePopupMenu();
+		HMENU hSubMenuFonts = CreatePopupMenu();
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_STRING, CM_EXIT, "Exit");
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubMenu, "Skins");
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubMenuFonts, "Fonts");
+
+		InsertMenu(hSubMenuFonts, 0, MF_BYPOSITION | MF_STRING, CM_FONTS_DIGITAL_7, "digital-7");
+		InsertMenu(hSubMenuFonts, 0, MF_BYPOSITION | MF_STRING, CM_FONTS_BEYOND_WONDERLAND, "beyond-wonderland");
+
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_GREEN, "Square green");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Square blue");
 
@@ -464,6 +458,12 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case CM_SQUARE_BLUE: SetSkin(hwnd, hSkin);color_scheme = BLUE; break;
 		case CM_SQUARE_GREEN: SetSkin(hwnd, hSkin); color_scheme = GREEN;break;
+		case CM_FONTS_DIGITAL_7:
+			SetFonts(hwnd, (LPSTR)"digital-7",hFont);		
+			break;
+		case CM_FONTS_BEYOND_WONDERLAND: 
+			SetFonts(hwnd, (LPSTR)"Beyond Wonderland",hFont);
+			break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		}
 
@@ -523,3 +523,31 @@ VOID SetSkin(HWND hwnd, HINSTANCE &hSkin)
 		SendMessage(GetDlgItem(hwnd, IDC_BUTTON_0+i), BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
 	}	
 }
+
+VOID SetFonts(HWND& hwnd, LPSTR fonts, HFONT &hFont)
+{	
+	std::string tmp = "Fonts\\";
+	tmp += fonts;
+	tmp += ".ttf";
+	AddFontResourceEx(tmp.c_str(), FR_PRIVATE, 0);
+	auto a = GetLastError();
+	hFont = CreateFont
+	(
+		g_i_FONT_HEIGHT, g_i_FONT_WIDTH /**/,
+		0, 0,
+		500,
+		FALSE,
+		FALSE,
+		FALSE,
+		DEFAULT_CHARSET,
+		OUT_CHARACTER_PRECIS,
+		CLIP_CHARACTER_PRECIS,
+		ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+		fonts
+	);
+	SendMessage(GetDlgItem(hwnd,IDC_EDIT_DISPLAY), WM_SETFONT, (WPARAM)hFont, true);
+	
+	RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+}
+
+
