@@ -4,6 +4,7 @@
 #include<limits>
 #include<stdio.h>
 #include"resource.h"
+#include <string>
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
@@ -31,12 +32,13 @@ CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID PushButton(HWND parent, INT id);
 
-enum COLOR { BLUE, GREEN };
+enum COLOR { BLUE, GREEN,MERCURY };
 enum ELEMENT { WINDOW_BACKGROUND, DISPLAY_BACKGROUND, FOREGROUND };
 CONST COLORREF g_COLORS[][3] =
 {
 	{RGB(0,0,200),RGB(0,0,100),RGB(255,0,0)},
-	{RGB(0,200,0),RGB(0,100,0),RGB(0,255,0)}
+	{RGB(0,200,0),RGB(0,100,0),RGB(0,255,0)},
+	{ RGB(64,64,64), RGB(32,32,32), RGB(0, 255, 0) }
 };
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -106,8 +108,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		AllocConsole();
-		freopen("CONOUT$", "w", stdout);
+		//AllocConsole();
+		//freopen("CONOUT$", "w", stdout);
 		std::cout << "Hello Console" << std::endl;
 		//C:\\Users\\roman\\source\\repos\\PD_311_WIN\\WinAPI\\x64\\Debug\\
 		
@@ -492,8 +494,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		switch (item)
 		{
 		case CM_SQUARE_BLUE: SetSkinFromDLL(hwnd, (LPSTR)"square_blue");color_scheme = BLUE; break;
-		case CM_SQUARE_GREEN: SetSkinFromDLL(hwnd, (LPSTR)"square_green"); color_scheme = GREEN;break;
-		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"metal_mistral"); color_scheme = BLUE;break;
+		case CM_SQUARE_GREEN: SetSkinFromDLL(hwnd, (LPSTR)DEFAULT_SKIN); color_scheme = GREEN;break;
+		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"metal_mistral"); color_scheme = MERCURY;break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		}
 
@@ -512,7 +514,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_DESTROY:
 		FreeLibrary(hSkin);
-		FreeConsole();
+	//	FreeConsole();
 		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:	DestroyWindow(hwnd); break;
@@ -579,8 +581,15 @@ VOID SetSkin(HWND hwnd, LPSTR skin)
 
 VOID SetSkinFromDLL(HWND hwnd, LPSTR skin)
 {
-	HINSTANCE hButtons = LoadLibrary(skin);
-	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+	CHAR sz_current_dir[MAX_PATH]{};
+	SetCurrentDirectory("ButtonsDLL");
+	GetCurrentDirectory(MAX_PATH, sz_current_dir);
+	std::string tmp = sz_current_dir;
+	tmp += "\\";
+	tmp += skin;
+	tmp += ".dll";
+	HINSTANCE hButtons = LoadLibrary(tmp.c_str());
+	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL+1; i++)
 	{
 		HWND hButton = GetDlgItem(hwnd, i);
 		std::cout << i << "\t"<<FormatLastError() << std::endl;
