@@ -92,6 +92,18 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 		break;
 	case WM_COMMAND:
+	{
+		SendMessage(GetDlgItem(hwnd, IDC_EDIT), EN_UPDATE, 0, 0);
+		auto d = GetLastError();
+	}
+	break;
+	case WM_SIZE:
+	{
+		RECT window;
+		GetWindowRect(hwnd, &window);
+		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 0, 0, window.right - window.left, window.bottom - window.top, TRUE);
+
+	}
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
