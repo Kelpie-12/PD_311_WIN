@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calc", "Calc\Calc.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CalcResourseDLL", "CalcResourseDLL\CalcResourseDLL.vcxproj", "{6A41580C-A330-4A4A-AD44-077EDEB44124}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextEditor", "TextEditor\TextEditor.vcxproj", "{D72EC0E4-86CF-4968-9633-68179AF63751}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{6A41580C-A330-4A4A-AD44-077EDEB44124}.Release|x64.Build.0 = Release|x64
 		{6A41580C-A330-4A4A-AD44-077EDEB44124}.Release|x86.ActiveCfg = Release|Win32
 		{6A41580C-A330-4A4A-AD44-077EDEB44124}.Release|x86.Build.0 = Release|Win32
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Debug|x64.ActiveCfg = Debug|x64
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Debug|x64.Build.0 = Debug|x64
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Debug|x86.ActiveCfg = Debug|Win32
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Debug|x86.Build.0 = Debug|Win32
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Release|x64.ActiveCfg = Release|x64
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Release|x64.Build.0 = Release|x64
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Release|x86.ActiveCfg = Release|Win32
+		{D72EC0E4-86CF-4968-9633-68179AF63751}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
