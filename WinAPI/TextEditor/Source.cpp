@@ -102,7 +102,6 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		RECT window;
 		GetWindowRect(hwnd, &window);
 		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 0, 0, window.right - window.left, window.bottom - window.top, TRUE);
-
 	}
 		break;
 	case WM_DESTROY:
