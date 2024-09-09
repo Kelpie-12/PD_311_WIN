@@ -72,6 +72,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE richEd = LoadLibrary("RichEd20.dll");
+	static CHAR lpszFileName[MAX_PATH] = "";
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -108,13 +109,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
-			CHAR lpszFileName[MAX_PATH]{};
-
+			//CHAR lpszFileName[MAX_PATH]{};
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus(*.cpp;*.h)\0*.cpp;*.h\0All files (*.*)\0*.*\0";
+
+			//ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
 			//ofn.lpstrFilter = "Text Files(*.txt), * .txt, Add - In Files(*.xla), * .xla";
 			ofn.lpstrDefExt = "txt";
 			ofn.nMaxFile = MAX_PATH;
@@ -124,10 +126,37 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
-			}
-		
+			}		
 		}
 			break;
+		case ID_FILE_SAVE:
+			if (strlen(lpszFileName))
+			{
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+			}
+			else
+			{
+				SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVEAS, 0);
+			}
+			break;
+		case ID_FILE_SAVEAS:
+		{
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = hwnd;
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus(*.cpp;*.h)\0*.cpp;*.h\0All files (*.*)\0*.*\0";
+			ofn.lpstrDefExt = "txt";
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFile = (LPSTR)lpszFileName;
+			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+			if (GetSaveFileName(&ofn))
+			{
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+			}
+		}
+			break;
+
 		default:
 			break;
 		}
@@ -201,8 +230,6 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
 	}
 	return bSuccess;
 }
-
-
 
 LPSTR FormatLastError()
 {
