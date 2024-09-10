@@ -73,6 +73,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE richEd = LoadLibrary("RichEd20.dll");
 	static CHAR lpszFileName[MAX_PATH] = "";
+	static BOOL bnChanged = FALSE;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -94,6 +95,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
+		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
 
 	}
 	break;
@@ -109,15 +111,24 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
+			BOOL cancel = FALSE;
+			if (bnChanged)
+			{
+				switch (MessageBox(hwnd, "Save?", "File was changed", MB_YESNOCANCEL | MB_ICONQUESTION))
+				{
+				case IDYES:		SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+				case IDNO:		break;
+				case IDCANCEL:	cancel = TRUE;
+				}
+			}
+			if (cancel)
+				break;
 			//CHAR lpszFileName[MAX_PATH]{};
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hwnd;
 			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus(*.cpp;*.h)\0*.cpp;*.h\0All files (*.*)\0*.*\0";
-
-			//ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
-			//ofn.lpstrFilter = "Text Files(*.txt), * .txt, Add - In Files(*.xla), * .xla";
 			ofn.lpstrDefExt = "txt";
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -126,6 +137,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
+				bnChanged = FALSE;
 			}		
 		}
 			break;
@@ -156,7 +168,15 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 			break;
-
+		case IDC_EDIT:
+		{
+			if (HIWORD(wParam) == EN_CHANGE)	//Doesn't work with MULTILINE & WM_SETTEXT simultanously.
+			{
+				bnChanged = TRUE;
+				//std::cout << "File was changed" << std::endl;
+			}
+		}
+		break;
 		default:
 			break;
 		}
