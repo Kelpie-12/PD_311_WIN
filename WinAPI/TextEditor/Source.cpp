@@ -1,3 +1,4 @@
+//https://www.frolov-lib.ru/books/bsp/v22/ch6_1.html
 #undef UNICODE
 #define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
