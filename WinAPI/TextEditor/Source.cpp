@@ -4,11 +4,13 @@
 #include "resource.h"
 #include <iostream>
 #include <Richedit.h>
+#include <string>
 //17.06
 CONST CHAR g_sz_WINDOW_CLASS[] = "TextEditorPD_311";
 LPSTR FormatLastError();
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName);
+BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName, BOOL wrap);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -195,6 +197,28 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
+		case ID_FORMAT_WORDWRAP:
+		{
+			RECT windowRect;
+			GetWindowRect(GetDlgItem(hwnd, IDC_EDIT), &windowRect);
+			SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), "tmp.txt");
+			DestroyWindow(GetDlgItem(hwnd, IDC_EDIT));
+			HWND hEdit = CreateWindowEx
+			(
+				NULL, "RICHEDIT20A", "",
+				WS_CHILD | WS_VISIBLE  /*|| WS_HSCROLL ES_MULTILINE |ES_AUTOVSCROLL*/ /* |WS_VSCROLL*/ ,
+				10, 10,
+				windowRect.right - windowRect.left,
+				windowRect.bottom - windowRect.top,
+				hwnd,
+				(HMENU)IDC_EDIT,
+				NULL,
+				NULL
+			);
+			LoadTextFileToEdit(hEdit, "tmp.txt",true);
+			DeleteFile("tmp.txt");
+		}
+			break;
 		default:
 			break;
 		}
@@ -229,7 +253,51 @@ BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName)
 				DWORD dwRead = 0;
 				if (ReadFile(hFile, lpszFileText, dwFileSize, &dwRead, NULL))
 				{
+
 					if (SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)lpszFileText))
+					{
+						bSuccess = TRUE;
+					}
+				}
+				GlobalFree(lpszFileText);
+			}
+			CloseHandle(hFile);
+		}
+	}
+	return bSuccess;
+}
+
+BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName,BOOL wrap)
+{
+	BOOL bSuccess = FALSE;
+	HANDLE hFile = CreateFile(lpszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		DWORD dwFileSize = GetFileSize(hFile, NULL);
+		if (dwFileSize != UINT_MAX)
+		{
+			LPSTR lpszFileText = (LPSTR)GlobalAlloc(GPTR, dwFileSize + 1);
+			if (lpszFileText)
+			{
+				DWORD dwRead = 0;
+				if (ReadFile(hFile, lpszFileText, dwFileSize, &dwRead, NULL))
+				{
+					std::string s;
+					if (wrap==true)
+					{		
+						s = lpszFileText;
+						s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
+
+						for (std::string::size_type n = 0; (n = s.find("\r", n)) != std::string::npos; ++n)
+						{
+							s.replace(n, 1, 1, ' ');
+						}
+					}
+					else
+					{
+
+					}
+					if (SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)s.c_str()))
 					{
 						bSuccess = TRUE;
 					}
@@ -286,3 +354,12 @@ LPSTR FormatLastError()
 	);
 	return lpszMessageBuffer;
 }
+
+
+/*
+1. Сохраняем файл
+2. Уничтожить эдит
+3. Создать новый
+4. Загрузить файл 
+5. Удалить файл
+*/
