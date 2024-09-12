@@ -1,9 +1,10 @@
-#undef UNICODE
+﻿#undef UNICODE
 #define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include "resource.h"
 #include <iostream>
 #include <Richedit.h>
+#include <CommCtrl.h>
 //17.06
 CONST CHAR g_sz_WINDOW_CLASS[] = "TextEditorPD_311";
 LPSTR FormatLastError();
@@ -72,13 +73,21 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE richEd = LoadLibrary("RichEd20.dll");
+	//static HINSTANCE ComCtl = LoadLibrary("ComCtl32.dll");
+	//CONST INITCOMMONCONTROLSEX icce{ sizeof(&icce) ,ICC_BAR_CLASSES };
+	//icce.dwSize = sizeof(&icce);
+	//icce.dwICC = ICC_BAR_CLASSES;	
+	//InitCommonControlsEx(&icce);
+
 	static CHAR lpszFileName[MAX_PATH] = "";
 	static BOOL bnChanged = FALSE;
+	static CHAR sz_title[MAX_PATH]{};
+
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
-
+		//InitCommonControlsEx(&icce);
 		RECT windowRect;
 		RECT clientRect;
 		GetWindowRect(hwnd, &windowRect);
@@ -86,7 +95,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HWND hEdit = CreateWindowEx
 		(
 			NULL, "RICHEDIT20A", "Workspace",
-			WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL|WS_VSCROLL,
+			WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
 			0, 0,
 			windowRect.right - windowRect.left,
 			windowRect.bottom - windowRect.top,
@@ -97,13 +106,33 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
 
+		//Status bar
+		HWND hStatus = CreateWindowEx
+		(
+			NULL, STATUSCLASSNAME, "Status bar", WS_CHILD | WS_VISIBLE,
+			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+			hwnd, (HMENU)IDC_STATUS, NULL, NULL
+		);
+		//Путь к файлу 
+		//Статус сохранения
+		//Кол-во слов
+		//Размер окна
+		//Размер файла
+		//Дата создания
+		//Дата последнего измениния
+		INT dimensions[] = { 500,600,700,800,900,1000,-1 };
+		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
 	break;
 	case WM_SIZE:
 	{
 		RECT window;
+		RECT clientRect;
 		GetClientRect(hwnd, &window);
-		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, window.right - window.left - 20, window.bottom - window.top - 20, TRUE);
+		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &clientRect);
+		DWORD dwStatusHeight = clientRect.bottom - clientRect.top;
+		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, window.right - window.left - 20, window.bottom - window.top - 20 - dwStatusHeight, TRUE);
+		MoveWindow(GetDlgItem(hwnd, IDC_STATUS), 0, 0, 0, 0, TRUE);
 	}
 	break;
 	case WM_COMMAND:
@@ -138,18 +167,24 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
 				bnChanged = FALSE;
-			}		
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+			}
 		}
-			break;
+		break;
 		case ID_FILE_SAVE:
 			if (strlen(lpszFileName))
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
+
 			}
 			else
 			{
 				SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVEAS, 0);
 			}
+			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
 			break;
 		case ID_FILE_SAVEAS:
 		{
@@ -165,15 +200,34 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (GetSaveFileName(&ofn))
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
 			}
 		}
-			break;
+		break;
 		case IDC_EDIT:
 		{
 			if (HIWORD(wParam) == EN_CHANGE)	//Doesn't work with MULTILINE & WM_SETTEXT simultanously.
 			{
 				bnChanged = TRUE;
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Changed");
 				//std::cout << "File was changed" << std::endl;
+				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+				DWORD dwTextLen = SendMessage(hEdit, WM_GETTEXT, 0, 0);
+				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen + 1);
+				SendMessage(hEdit, WM_GETTEXT,dwTextLen+1,(LPARAM)lpstrBuffer);
+				CHAR delimiter[] = " ,.!?:;()[]<>{}\'\"\\/\n";
+				int i = 0;
+				for (char* pch = strtok(lpstrBuffer, delimiter); pch; pch = strtok(NULL, delimiter))
+					i++;				
+				CHAR sz_status[MAX_PATH]{};
+				sprintf(sz_status, "%i %s", i, " words");
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
+				sprintf(sz_status, "%s %i", "char: ", dwTextLen);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 3, (LPARAM)sz_status);
+				GlobalFree(lpstrBuffer);
 			}
 		}
 		break;
@@ -183,6 +237,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_DESTROY:
 		FreeLibrary(richEd);
+		//FreeLibrary(ComCtl);
 		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:
@@ -230,15 +285,15 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		DWORD dwTextLength = SendMessage(hEdit, WM_GETTEXTLENGTH, 0, 0);
-		if (dwTextLength>0)
+		if (dwTextLength > 0)
 		{
 			LPSTR lpszText = (LPSTR)GlobalAlloc(GPTR, dwTextLength);
 			if (lpszText)
 			{
-				if (SendMessage(hEdit,WM_GETTEXT,dwTextLength+1,(LPARAM)lpszText))
+				if (SendMessage(hEdit, WM_GETTEXT, dwTextLength + 1, (LPARAM)lpszText))
 				{
 					DWORD dwWritten;
-					if (WriteFile(hFile,lpszText,dwTextLength,&dwWritten,NULL))
+					if (WriteFile(hFile, lpszText, dwTextLength, &dwWritten, NULL))
 					{
 						bSuccess = TRUE;
 					}
@@ -253,7 +308,7 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName)
 
 LPSTR FormatLastError()
 {
-	DWORD dwErrorMessageID = GetLastError();	//������� GetLastError() ���������� �������� ��� ��������� ��������� ������ ���������.
+	DWORD dwErrorMessageID = GetLastError();	//Функция GetLastError() возвращает числовой код последней возникшей ошибки выполненя.
 	LPSTR lpszMessageBuffer = NULL;
 	DWORD dwSize = FormatMessage
 	(
