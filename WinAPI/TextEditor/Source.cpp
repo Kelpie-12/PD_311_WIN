@@ -5,13 +5,12 @@
 #include "resource.h"
 #include <iostream>
 #include <Richedit.h>
-#include <string>
+#include <CommCtrl.h>
 //17.06
 CONST CHAR g_sz_WINDOW_CLASS[] = "TextEditorPD_311";
 LPSTR FormatLastError();
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName);
-BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName, BOOL wrap);
+BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -44,7 +43,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
 	HWND hwnd = CreateWindowEx
 	(
-		NULL,
+		WS_EX_ACCEPTFILES,
 		g_sz_WINDOW_CLASS,
 		g_sz_WINDOW_CLASS,
 		WS_OVERLAPPEDWINDOW,
@@ -75,17 +74,22 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE richEd = LoadLibrary("RichEd20.dll");
+	//static HINSTANCE ComCtl = LoadLibrary("ComCtl32.dll");
+	//CONST INITCOMMONCONTROLSEX icce{ sizeof(&icce) ,ICC_BAR_CLASSES };
+	//icce.dwSize = sizeof(&icce);
+	//icce.dwICC = ICC_BAR_CLASSES;	
+	//InitCommonControlsEx(&icce);
+
 	static CHAR lpszFileName[MAX_PATH] = "";
+	static LPSTR lpszFileText = NULL;
 	static BOOL bnChanged = FALSE;
-	static BOOL bNameFile = FALSE;
-
-
+	static CHAR sz_title[MAX_PATH]{};
 
 	switch (uMsg)
-	{	
+	{
 	case WM_CREATE:
 	{
-		
+		//InitCommonControlsEx(&icce);
 		RECT windowRect;
 		RECT clientRect;
 		GetWindowRect(hwnd, &windowRect);
@@ -103,19 +107,47 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
-		SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)lpszFileName);
 
-		
+		//Status bar
+		HWND hStatus = CreateWindowEx
+		(
+			NULL, STATUSCLASSNAME, "Status bar", WS_CHILD | WS_VISIBLE,
+			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+			hwnd, (HMENU)IDC_STATUS, NULL, NULL
+		);
+		//Путь к файлу 
+		//Статус сохранения
+		//Кол-во слов
+		//Размер окна
+		//Размер файла
+		//Дата создания
+		//Дата последнего измениния
+		INT dimensions[] = { 500,600,700,800,900,1000,-1 };
+		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
 	break;
 	case WM_SIZE:
 	{
 		RECT window;
+		RECT clientRect;
 		GetClientRect(hwnd, &window);
-		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, window.right - window.left - 20, window.bottom - window.top - 20, TRUE);
+		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &clientRect);
+		DWORD dwStatusHeight = clientRect.bottom - clientRect.top;
+		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, window.right - window.left - 20, window.bottom - window.top - 20 - dwStatusHeight, TRUE);
+		MoveWindow(GetDlgItem(hwnd, IDC_STATUS), 0, 0, 0, 0, TRUE);
 	}
 	break;
-	case WM_COMMAND:		
+	case WM_DROPFILES:
+	{
+		DragQueryFile((HDROP)wParam, 0, lpszFileName, MAX_PATH);
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);		
+
+		SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+		sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
+		SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+	}
+	break;
+	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case ID_FILE_OPEN:
@@ -146,26 +178,25 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
-				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)lpszFileName);
-				bNameFile = TRUE;
 				bnChanged = FALSE;
-			}			
-			
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+			}
 		}
 		break;
 		case ID_FILE_SAVE:
 			if (strlen(lpszFileName))
 			{
-				if (bnChanged==TRUE)
-				{
-					lpszFileName[strlen(lpszFileName) - 1] = '\0';
-				}
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
+
 			}
 			else
 			{
 				SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVEAS, 0);
 			}
+			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
 			break;
 		case ID_FILE_SAVEAS:
 		{
@@ -181,6 +212,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (GetSaveFileName(&ofn))
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
+				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
 			}
 		}
 		break;
@@ -188,44 +223,33 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			if (HIWORD(wParam) == EN_CHANGE)	//Doesn't work with MULTILINE & WM_SETTEXT simultanously.
 			{
-				if (bNameFile)
-				{
-					SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)strcat(lpszFileName, "*"));
-					bNameFile = FALSE;
-				}
 				bnChanged = TRUE;
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Changed");
 				//std::cout << "File was changed" << std::endl;
+				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+				DWORD dwTextLen = SendMessage(hEdit, WM_GETTEXT, 0, 0);
+				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen + 1);
+				SendMessage(hEdit, WM_GETTEXT, dwTextLen + 1, (LPARAM)lpstrBuffer);
+				CHAR delimiter[] = " ,.!?:;()[]<>{}\'\"\\/\n";
+				int i = 0;
+				for (char* pch = strtok(lpstrBuffer, delimiter); pch; pch = strtok(NULL, delimiter))
+					i++;
+				CHAR sz_status[MAX_PATH]{};
+				sprintf(sz_status, "%i %s", i, " words");
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
+				sprintf(sz_status, "%s %i", "char: ", dwTextLen);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 3, (LPARAM)sz_status);
+				GlobalFree(lpstrBuffer);
 			}
 		}
 		break;
-		case ID_FORMAT_WORDWRAP:
-		{
-			RECT windowRect;
-			GetWindowRect(GetDlgItem(hwnd, IDC_EDIT), &windowRect);
-			SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), "tmp.txt");
-			DestroyWindow(GetDlgItem(hwnd, IDC_EDIT));
-			HWND hEdit = CreateWindowEx
-			(
-				NULL, "RICHEDIT20A", "",
-				WS_CHILD | WS_VISIBLE  /*|| WS_HSCROLL ES_MULTILINE |ES_AUTOVSCROLL*/ /* |WS_VSCROLL*/ ,
-				10, 10,
-				windowRect.right - windowRect.left,
-				windowRect.bottom - windowRect.top,
-				hwnd,
-				(HMENU)IDC_EDIT,
-				NULL,
-				NULL
-			);
-			LoadTextFileToEdit(hEdit, "tmp.txt",true);
-			DeleteFile("tmp.txt");
-		}
-			break;
 		default:
 			break;
 		}
-		break;
+		break;	
 	case WM_DESTROY:
 		FreeLibrary(richEd);
+		//FreeLibrary(ComCtl);
 		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:
@@ -239,7 +263,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 
-BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName)
+BOOL LoadTextFileToEdit(HWND hEdit, LPCSTR lpszFileName)
 {
 	BOOL bSuccess = FALSE;
 	HANDLE hFile = CreateFile(lpszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
@@ -254,51 +278,7 @@ BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName)
 				DWORD dwRead = 0;
 				if (ReadFile(hFile, lpszFileText, dwFileSize, &dwRead, NULL))
 				{
-
 					if (SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)lpszFileText))
-					{
-						bSuccess = TRUE;
-					}
-				}
-				GlobalFree(lpszFileText);
-			}
-			CloseHandle(hFile);
-		}
-	}
-	return bSuccess;
-}
-
-BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName,BOOL wrap)
-{
-	BOOL bSuccess = FALSE;
-	HANDLE hFile = CreateFile(lpszFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
-	if (hFile != INVALID_HANDLE_VALUE)
-	{
-		DWORD dwFileSize = GetFileSize(hFile, NULL);
-		if (dwFileSize != UINT_MAX)
-		{
-			LPSTR lpszFileText = (LPSTR)GlobalAlloc(GPTR, dwFileSize + 1);
-			if (lpszFileText)
-			{
-				DWORD dwRead = 0;
-				if (ReadFile(hFile, lpszFileText, dwFileSize, &dwRead, NULL))
-				{
-					std::string s;
-					if (wrap==true)
-					{		
-						s = lpszFileText;
-						s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
-
-						for (std::string::size_type n = 0; (n = s.find("\r", n)) != std::string::npos; ++n)
-						{
-							s.replace(n, 1, 1, ' ');
-						}
-					}
-					else
-					{
-
-					}
-					if (SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)s.c_str()))
 					{
 						bSuccess = TRUE;
 					}
@@ -355,12 +335,3 @@ LPSTR FormatLastError()
 	);
 	return lpszMessageBuffer;
 }
-
-
-/*
-1. Сохраняем файл
-2. Уничтожить эдит
-3. Создать новый
-4. Загрузить файл 
-5. Удалить файл
-*/
