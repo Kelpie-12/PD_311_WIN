@@ -12,7 +12,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
 LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
-VOID SetFileDataToStatusBar(CONST CHAR szFileName[]);
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[],HWND hwnd, CHAR sz_title[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -168,22 +168,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
-				bnChanged = FALSE;
-			
+				bnChanged = FALSE;			
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
-				
-				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
-				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
-
-				WIN32_FIND_DATA fileData;
-				ZeroMemory(&fileData, sizeof(fileData));
-				HANDLE hFile = FindFirstFile(lpszFileName, &fileData);
-				CHAR sz_buffer[MAX_PATH]{};
-				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
-
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5, (LPARAM)FormatFileTime(fileData.ftCreationTime, "Creation data: ", sz_buffer));
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6, (LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Changed data: ", sz_buffer));
+				SetFileDataToStatusBar(lpszFileName, hwnd,sz_title);			
 			}
 		}
 		break;
@@ -192,7 +179,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
-
+				SetFileDataToStatusBar(lpszFileName, hwnd, sz_title);
 			}
 			else
 			{
@@ -218,6 +205,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
 				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Save");
+				SetFileDataToStatusBar(lpszFileName, hwnd, sz_title);
+
 			}
 		}
 		break;
@@ -353,7 +342,19 @@ LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[
 	return sz_buffer;
 }
 
-VOID SetFileDataToStatusBar(CONST CHAR szFileName[])
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[], HWND hwnd,CHAR sz_title[])
 {
+	//CHAR sz_title[MAX_PATH]{};
+	sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+	SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
 
+	WIN32_FIND_DATA fileData;
+	ZeroMemory(&fileData, sizeof(fileData));
+	HANDLE hFile = FindFirstFile(szFileName, &fileData);
+	CHAR sz_buffer[MAX_PATH]{};
+	sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5, (LPARAM)FormatFileTime(fileData.ftCreationTime, "Creation data: ", sz_buffer));
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6, (LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Changed data: ", sz_buffer));
 }
