@@ -11,6 +11,8 @@ LPSTR FormatLastError();
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND& hEdit, LPCSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCSTR lpszFileName);
+LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[]);
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -120,7 +122,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//Размер файла
 		//Дата создания
 		//Дата последнего измениния
-		INT dimensions[] = { 500,600,700,800,900,1000,-1 };
+		INT dimensions[] = { 500,600,700,800,900,1150,-1 };
 		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
 	break;
@@ -167,9 +169,21 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, lpszFileName);
 				bnChanged = FALSE;
+			
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
+				
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
 				SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+
+				WIN32_FIND_DATA fileData;
+				ZeroMemory(&fileData, sizeof(fileData));
+				HANDLE hFile = FindFirstFile(lpszFileName, &fileData);
+				CHAR sz_buffer[MAX_PATH]{};
+				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5, (LPARAM)FormatFileTime(fileData.ftCreationTime, "Creation data: ", sz_buffer));
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6, (LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Changed data: ", sz_buffer));
 			}
 		}
 		break;
@@ -217,11 +231,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				DWORD dwTextLen = SendMessage(hEdit, WM_GETTEXT, 0, 0);
 				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLen + 1);
-				SendMessage(hEdit, WM_GETTEXT,dwTextLen+1,(LPARAM)lpstrBuffer);
+				SendMessage(hEdit, WM_GETTEXT, dwTextLen + 1, (LPARAM)lpstrBuffer);
 				CHAR delimiter[] = " ,.!?:;()[]<>{}\'\"\\/\n";
 				int i = 0;
 				for (char* pch = strtok(lpstrBuffer, delimiter); pch; pch = strtok(NULL, delimiter))
-					i++;				
+					i++;
 				CHAR sz_status[MAX_PATH]{};
 				sprintf(sz_status, "%i %s", i, " words");
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
@@ -241,6 +255,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:
+		DestroyWindow(GetDlgItem(hwnd, IDC_EDIT));
 		DestroyWindow(hwnd);
 		break;
 	default:
@@ -321,4 +336,24 @@ LPSTR FormatLastError()
 		NULL
 	);
 	return lpszMessageBuffer;
+}
+LPSTR FormatFileTime(FILETIME filetime, CONST CHAR sz_message[], CHAR sz_buffer[])
+{
+	//CHAR sz_buffer[MAX_PATH]{};
+	ZeroMemory(sz_buffer, MAX_PATH);
+	FILETIME localTime;
+	ZeroMemory(&localTime, sizeof(localTime));
+	FileTimeToLocalFileTime(&filetime, &localTime);
+
+	SYSTEMTIME system_time;
+	ZeroMemory(&system_time, sizeof(system_time));
+	FileTimeToSystemTime(&localTime, &system_time);
+
+	sprintf(sz_buffer, "%s %02d.%02d.%02d %02d:%02d:%02d", sz_message, system_time.wYear, system_time.wMonth, system_time.wDay, system_time.wHour, system_time.wMinute, system_time.wSecond);
+	return sz_buffer;
+}
+
+VOID SetFileDataToStatusBar(CONST CHAR szFileName[])
+{
+
 }
