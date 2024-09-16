@@ -59,9 +59,17 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 		MessageBox(NULL, "Window creation failed", "Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
+
+	if (lpCmdLine && strlen(lpCmdLine) > 0)
+	{
+		CHAR szFileName[MAX_PATH];
+		strncpy(szFileName, lpCmdLine, MAX_PATH);
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+	}
+
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
-
+	
 	MSG msg;
 	while (GetMessage(&msg, 0, 0, 0) > 0)
 	{
@@ -139,8 +147,21 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_DROPFILES:
 	{
+		BOOL cancel = FALSE;
+		if (bnChanged)
+		{
+			switch (MessageBox(hwnd, "Save?", "File was changed", MB_YESNOCANCEL | MB_ICONQUESTION))
+			{
+			case IDYES:		SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+			case IDNO:		break;
+			case IDCANCEL:	cancel = TRUE;
+			}
+		}
+		if (cancel)
+			break;
+
 		DragQueryFile((HDROP)wParam, 0, lpszFileName, MAX_PATH);
-		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);		
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), lpszFileName);
 
 		SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)lpszFileName);
 		sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(lpszFileName, '\\') + 1);
@@ -246,7 +267,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		default:
 			break;
 		}
-		break;	
+		break;
 	case WM_DESTROY:
 		FreeLibrary(richEd);
 		//FreeLibrary(ComCtl);
