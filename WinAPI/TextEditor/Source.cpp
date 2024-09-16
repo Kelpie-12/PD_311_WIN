@@ -59,13 +59,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 		MessageBox(NULL, "Window creation failed", "Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
-
-	if (lpCmdLine && strlen(lpCmdLine) > 0)
+if (lpCmdLine && strlen(lpCmdLine) > 0)
 	{
 		CHAR szFileName[MAX_PATH];
-		strncpy(szFileName, lpCmdLine, MAX_PATH);
-		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+	//	strncpy(szFileName, lpCmdLine, MAX_PATH);
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), lpCmdLine);
 	}
+	
 
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
@@ -96,7 +96,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_CREATE:
-	{
+	{		
 		//InitCommonControlsEx(&icce);
 		RECT windowRect;
 		RECT clientRect;
