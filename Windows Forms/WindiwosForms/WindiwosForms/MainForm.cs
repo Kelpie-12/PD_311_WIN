@@ -12,18 +12,22 @@ namespace WindiwosForms
 {
 	public partial class MainForm : Form
 	{
+		bool controlsVisible;
+	
 		public MainForm()
 		{
-			InitializeComponent();			
+			InitializeComponent();
+			controlsVisible = true;
 		}	
 		
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-			label1.Text = DateTime.Now.ToString("hh:mm:ss tt");
+			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			if (cbShowDate.Checked)
 			{
-				label1.Text += $"\n{DateTime.Now.ToString("yyyy:MM:dd")}";
+				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy:MM:dd")}";
 			}
+			notifyIcon1.Visible = true;
 		}
 
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -54,15 +58,50 @@ namespace WindiwosForms
 			}
 		}
 
-		private void закрытьToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Show();
-			WindowState = FormWindowState.Normal;
+			//this.Show();
+			//WindowState = FormWindowState.Normal;
+			controlsVisible = showControlToolStripMenuItem.Checked;
+			SetControlsVisibility(!controlsVisible);
 		}
 
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+
+		private void btnHideControls_Click(object sender, EventArgs e)
+		{
+			SetControlsVisibility(false);
+		}
+		void SetControlsVisibility(bool visible)
+		{
+			FormBorderStyle = visible ? FormBorderStyle.Sizable : FormBorderStyle.None;
+			TransparencyKey = visible ? Color.Empty : BackColor;
+			cbShowDate.Visible = visible;
+			btnHideControls.Visible = visible;
+			labelTime.BackColor = visible ? BackColor: Color.LightBlue;
+			ShowInTaskbar = visible;
+			TopMost = !visible;
+		}
+
+		
+
+		private void showDateToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			cbShowDate.Checked = showDateToolStripMenuItem.Checked;
+
+		}
+
+		private void cbShowDate_CheckedChanged(object sender, EventArgs e)
+		{
+			showDateToolStripMenuItem.Checked=cbShowDate.Checked;
+		}
+
+		private void showControlToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			
 		}
 	}
 }
