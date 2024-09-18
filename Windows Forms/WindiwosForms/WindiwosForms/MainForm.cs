@@ -17,7 +17,12 @@ namespace WindiwosForms
 		public MainForm()
 		{
 			InitializeComponent();
-			controlsVisible = true;
+			//controlsVisible = true;
+			SetControlsVisibility(false);
+			StartPosition= FormStartPosition.Manual;
+			int start_x=System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right-Right-25;
+			int start_y=75;
+			Location = new Point(start_x, start_y);
 		}	
 		
 		private void timer1_Tick(object sender, EventArgs e)
@@ -84,6 +89,8 @@ namespace WindiwosForms
 			labelTime.BackColor = visible ? BackColor: Color.LightBlue;
 			ShowInTaskbar = visible;
 			TopMost = !visible;
+			showControlToolStripMenuItem.Checked = visible;
+			controlsVisible= visible;
 		}
 
 		
@@ -102,6 +109,11 @@ namespace WindiwosForms
 		private void showControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			
+		}
+
+		private void labelTime_DoubleClick(object sender, EventArgs e)
+		{
+			SetControlsVisibility(!controlsVisible);
 		}
 	}
 }

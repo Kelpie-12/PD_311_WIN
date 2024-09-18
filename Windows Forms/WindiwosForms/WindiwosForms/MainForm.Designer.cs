@@ -48,11 +48,12 @@
 			this.labelTime.AutoSize = true;
 			this.labelTime.ContextMenuStrip = this.contextMenuStrip1;
 			this.labelTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.labelTime.Location = new System.Drawing.Point(106, 146);
+			this.labelTime.Location = new System.Drawing.Point(89, 31);
 			this.labelTime.Name = "labelTime";
 			this.labelTime.Size = new System.Drawing.Size(144, 51);
 			this.labelTime.TabIndex = 0;
 			this.labelTime.Text = "label1";
+			this.labelTime.DoubleClick += new System.EventHandler(this.labelTime_DoubleClick);
 			// 
 			// contextMenuStrip1
 			// 
@@ -106,7 +107,7 @@
 			// 
 			this.cbShowDate.AutoSize = true;
 			this.cbShowDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.cbShowDate.Location = new System.Drawing.Point(115, 295);
+			this.cbShowDate.Location = new System.Drawing.Point(61, 171);
 			this.cbShowDate.Name = "cbShowDate";
 			this.cbShowDate.Size = new System.Drawing.Size(187, 29);
 			this.cbShowDate.TabIndex = 1;
@@ -128,7 +129,7 @@
 			// btnHideControls
 			// 
 			this.btnHideControls.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.btnHideControls.Location = new System.Drawing.Point(154, 361);
+			this.btnHideControls.Location = new System.Drawing.Point(37, 238);
 			this.btnHideControls.Name = "btnHideControls";
 			this.btnHideControls.Size = new System.Drawing.Size(231, 57);
 			this.btnHideControls.TabIndex = 2;
@@ -140,7 +141,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1264, 441);
+			this.ClientSize = new System.Drawing.Size(414, 331);
 			this.Controls.Add(this.btnHideControls);
 			this.Controls.Add(this.cbShowDate);
 			this.Controls.Add(this.labelTime);
