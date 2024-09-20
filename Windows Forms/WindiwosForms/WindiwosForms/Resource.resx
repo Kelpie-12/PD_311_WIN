@@ -117,29 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="business_color" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icon\business-color.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="clock_time" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icon\clock-time.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="digital_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\digital-7.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="fonde" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Fonts\fonde.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Historical" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icon\Historical.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconClock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Icon\IconClock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Luneis_Demo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Fonts\Luneis-Demo.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Witches_Note_Free" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Fonts\Witches Note Free.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="MyFont" xml:space="preserve">
+    <value />
   </data>
 </root>
