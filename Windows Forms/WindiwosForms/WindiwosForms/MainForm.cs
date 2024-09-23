@@ -13,6 +13,7 @@ namespace WindiwosForms
 	{
 		bool controlsVisible;
 		MemoryStream fontStream;
+
 		public MainForm()
 		{
 			InitializeComponent();
@@ -22,9 +23,27 @@ namespace WindiwosForms
 			int start_x = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - Right - 25;
 			int start_y = 75;
 			Location = new Point(start_x, start_y);
-			LoadSettings();
-		}
 
+
+			AllocConsole();
+			CreateCustomFont();
+		}
+		//~MainForm()
+		//{
+		//	pfc.Dispose();
+		//}
+		void CreateCustomFont()
+		{
+			Console.WriteLine(Directory.GetCurrentDirectory());
+			Directory.SetCurrentDirectory("..\\..\\Fonts");
+			Console.WriteLine(Directory.GetCurrentDirectory());
+
+			PrivateFontCollection pfc = new PrivateFontCollection();
+			pfc.AddFontFile("Terminat.ttf");
+			Font font = new Font(pfc.Families[0], labelTime.Font.Size);
+			labelTime.Font = font;
+			pfc.Dispose();
+		}
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
@@ -43,7 +62,7 @@ namespace WindiwosForms
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
-		{			
+		{
 			this.Show();
 			notifyIcon1.Visible = false;
 			WindowState = FormWindowState.Normal;
@@ -68,12 +87,12 @@ namespace WindiwosForms
 			//this.Show();
 			//WindowState = FormWindowState.Normal;
 			controlsVisible = showControlToolStripMenuItem.Checked;
+			OpenToolStripMenuItem.Checked= !controlsVisible;
 			SetControlsVisibility(!controlsVisible);
 		}
 
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSettings();
 			Close();
 		}
 
@@ -161,12 +180,12 @@ namespace WindiwosForms
 
 		private void digital7ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SetFonts( new MemoryStream(Properties.Resources.digital_7));
+			SetFonts(new MemoryStream(Properties.Resources.digital_7));
 		}
 
 		private void fondeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SetFonts( new MemoryStream(Properties.Resources.fonde));
+			SetFonts(new MemoryStream(Properties.Resources.fonde));
 		}
 
 		private void luneisToolStripMenuItem_Click(object sender, EventArgs e)
@@ -179,23 +198,13 @@ namespace WindiwosForms
 			SetFonts(new MemoryStream(Properties.Resources.Witches_Note_Free));
 		}
 
-		void SaveSettings()
-		{
-			Properties.Settings.Default.Fonts = labelTime.Font;
-			Properties.Settings.Default.Fonts.Size = 32;
-			Properties.Settings.Default.Save();
-		}
-		void LoadSettings()
-		{
-			labelTime.Font = Properties.Settings.Default.Fonts;
-		}
+
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			SaveSettings();
 			Close();
 		}
-		
+
 
 		private void busnessClockToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -206,7 +215,7 @@ namespace WindiwosForms
 		private void clockTimeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Icon = Properties.Resources.clock_time;
-			notifyIcon1.Icon=Properties.Resources.clock_time;
+			notifyIcon1.Icon = Properties.Resources.clock_time;
 		}
 
 		private void historicalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -219,6 +228,22 @@ namespace WindiwosForms
 		{
 			Icon = Properties.Resources.IconClock;
 			notifyIcon1.Icon = Properties.Resources.IconClock;
+		}
+
+		private const UInt32 StdOutputHandle = 0xfffffff5;
+		[DllImport("kernel32.dll")]
+		static extern IntPtr GetStdHandle(UInt32 handle);
+		[DllImport("kernel32.dll")]
+		static extern void SetStdHandle(UInt32 handle, IntPtr value);
+		[DllImport("kernel32.dll")]
+		static extern bool AllocConsole();
+
+		private void pinToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (TopMost == true)
+				TopMost = pinToolStripMenuItem.Checked = false;
+			else
+				TopMost = pinToolStripMenuItem.Checked = true;
 		}
 	}
 }

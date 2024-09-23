@@ -125,7 +125,7 @@
     <value>..\Icon\clock-time.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="digital_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\digital-7.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\Fonts\digital-7.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="fonde" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Fonts\fonde.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

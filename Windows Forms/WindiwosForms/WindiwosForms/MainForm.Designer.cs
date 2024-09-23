@@ -41,6 +41,11 @@
 			this.fondeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.luneisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.withesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.iconToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.busnessClockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clockTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.historicalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.backgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.foregroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,11 +55,7 @@
 			this.cbShowDate = new System.Windows.Forms.CheckBox();
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 			this.btnHideControls = new System.Windows.Forms.Button();
-			this.iconToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.busnessClockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clockTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.historicalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,6 +78,7 @@
             this.OpenToolStripMenuItem,
             this.showControlToolStripMenuItem,
             this.showDateToolStripMenuItem,
+            this.pinToolStripMenuItem,
             this.toolStripSeparator1,
             this.fontsToolStripMenuItem,
             this.iconToolStripMenuItem,
@@ -84,7 +86,7 @@
             this.toolStripSeparator2,
             this.closeToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 192);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 214);
 			// 
 			// OpenToolStripMenuItem
 			// 
@@ -155,6 +157,45 @@
 			this.withesToolStripMenuItem.Text = "Withes";
 			this.withesToolStripMenuItem.Click += new System.EventHandler(this.withesToolStripMenuItem_Click);
 			// 
+			// iconToolStripMenuItem
+			// 
+			this.iconToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.busnessClockToolStripMenuItem,
+            this.clockTimeToolStripMenuItem,
+            this.historicalToolStripMenuItem,
+            this.clockToolStripMenuItem});
+			this.iconToolStripMenuItem.Name = "iconToolStripMenuItem";
+			this.iconToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.iconToolStripMenuItem.Text = "Icon";
+			// 
+			// busnessClockToolStripMenuItem
+			// 
+			this.busnessClockToolStripMenuItem.Name = "busnessClockToolStripMenuItem";
+			this.busnessClockToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.busnessClockToolStripMenuItem.Text = "Busness clock";
+			this.busnessClockToolStripMenuItem.Click += new System.EventHandler(this.busnessClockToolStripMenuItem_Click);
+			// 
+			// clockTimeToolStripMenuItem
+			// 
+			this.clockTimeToolStripMenuItem.Name = "clockTimeToolStripMenuItem";
+			this.clockTimeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.clockTimeToolStripMenuItem.Text = "Clock time";
+			this.clockTimeToolStripMenuItem.Click += new System.EventHandler(this.clockTimeToolStripMenuItem_Click);
+			// 
+			// historicalToolStripMenuItem
+			// 
+			this.historicalToolStripMenuItem.Name = "historicalToolStripMenuItem";
+			this.historicalToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.historicalToolStripMenuItem.Text = "Historical ";
+			this.historicalToolStripMenuItem.Click += new System.EventHandler(this.historicalToolStripMenuItem_Click);
+			// 
+			// clockToolStripMenuItem
+			// 
+			this.clockToolStripMenuItem.Name = "clockToolStripMenuItem";
+			this.clockToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.clockToolStripMenuItem.Text = "Clock";
+			this.clockToolStripMenuItem.Click += new System.EventHandler(this.clockToolStripMenuItem_Click);
+			// 
 			// colorsToolStripMenuItem
 			// 
 			this.colorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -167,14 +208,14 @@
 			// backgroundColorToolStripMenuItem
 			// 
 			this.backgroundColorToolStripMenuItem.Name = "backgroundColorToolStripMenuItem";
-			this.backgroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.backgroundColorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.backgroundColorToolStripMenuItem.Text = "Background Color";
 			this.backgroundColorToolStripMenuItem.Click += new System.EventHandler(this.backgroundColorToolStripMenuItem_Click);
 			// 
 			// foregroundColorToolStripMenuItem
 			// 
 			this.foregroundColorToolStripMenuItem.Name = "foregroundColorToolStripMenuItem";
-			this.foregroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.foregroundColorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.foregroundColorToolStripMenuItem.Text = "Foreground Color";
 			this.foregroundColorToolStripMenuItem.Click += new System.EventHandler(this.foregroundColorToolStripMenuItem_Click);
 			// 
@@ -230,44 +271,14 @@
 			this.btnHideControls.UseVisualStyleBackColor = true;
 			this.btnHideControls.Click += new System.EventHandler(this.btnHideControls_Click);
 			// 
-			// iconToolStripMenuItem
+			// pinToolStripMenuItem
 			// 
-			this.iconToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.busnessClockToolStripMenuItem,
-            this.clockTimeToolStripMenuItem,
-            this.historicalToolStripMenuItem,
-            this.clockToolStripMenuItem});
-			this.iconToolStripMenuItem.Name = "iconToolStripMenuItem";
-			this.iconToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.iconToolStripMenuItem.Text = "Icon";
-			// 
-			// busnessClockToolStripMenuItem
-			// 
-			this.busnessClockToolStripMenuItem.Name = "busnessClockToolStripMenuItem";
-			this.busnessClockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.busnessClockToolStripMenuItem.Text = "Busness clock";
-			this.busnessClockToolStripMenuItem.Click += new System.EventHandler(this.busnessClockToolStripMenuItem_Click);
-			// 
-			// clockTimeToolStripMenuItem
-			// 
-			this.clockTimeToolStripMenuItem.Name = "clockTimeToolStripMenuItem";
-			this.clockTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.clockTimeToolStripMenuItem.Text = "Clock time";
-			this.clockTimeToolStripMenuItem.Click += new System.EventHandler(this.clockTimeToolStripMenuItem_Click);
-			// 
-			// historicalToolStripMenuItem
-			// 
-			this.historicalToolStripMenuItem.Name = "historicalToolStripMenuItem";
-			this.historicalToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.historicalToolStripMenuItem.Text = "Historical ";
-			this.historicalToolStripMenuItem.Click += new System.EventHandler(this.historicalToolStripMenuItem_Click);
-			// 
-			// clockToolStripMenuItem
-			// 
-			this.clockToolStripMenuItem.Name = "clockToolStripMenuItem";
-			this.clockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.clockToolStripMenuItem.Text = "Clock";
-			this.clockToolStripMenuItem.Click += new System.EventHandler(this.clockToolStripMenuItem_Click);
+			this.pinToolStripMenuItem.Checked = true;
+			this.pinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
+			this.pinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.pinToolStripMenuItem.Text = "Pin";
+			this.pinToolStripMenuItem.Click += new System.EventHandler(this.pinToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -316,6 +327,7 @@
 		private System.Windows.Forms.ToolStripMenuItem clockTimeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem historicalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clockToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pinToolStripMenuItem;
 	}
 }
 
