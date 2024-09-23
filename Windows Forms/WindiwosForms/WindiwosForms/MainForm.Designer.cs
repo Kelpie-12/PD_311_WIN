@@ -35,6 +35,7 @@
 			this.OpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.fontsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.digital7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,7 @@
 			this.cbShowDate = new System.Windows.Forms.CheckBox();
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 			this.btnHideControls = new System.Windows.Forms.Button();
-			this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.chooseFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -80,13 +81,14 @@
             this.showDateToolStripMenuItem,
             this.pinToolStripMenuItem,
             this.toolStripSeparator1,
+            this.chooseFontToolStripMenuItem,
             this.fontsToolStripMenuItem,
             this.iconToolStripMenuItem,
             this.colorsToolStripMenuItem,
             this.toolStripSeparator2,
             this.closeToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 214);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 236);
 			// 
 			// OpenToolStripMenuItem
 			// 
@@ -112,6 +114,15 @@
 			this.showDateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.showDateToolStripMenuItem.Text = "Show date";
 			this.showDateToolStripMenuItem.Click += new System.EventHandler(this.showDateToolStripMenuItem_Click);
+			// 
+			// pinToolStripMenuItem
+			// 
+			this.pinToolStripMenuItem.Checked = true;
+			this.pinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
+			this.pinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.pinToolStripMenuItem.Text = "Pin";
+			this.pinToolStripMenuItem.Click += new System.EventHandler(this.pinToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -271,14 +282,12 @@
 			this.btnHideControls.UseVisualStyleBackColor = true;
 			this.btnHideControls.Click += new System.EventHandler(this.btnHideControls_Click);
 			// 
-			// pinToolStripMenuItem
+			// chooseFontToolStripMenuItem
 			// 
-			this.pinToolStripMenuItem.Checked = true;
-			this.pinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
-			this.pinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.pinToolStripMenuItem.Text = "Pin";
-			this.pinToolStripMenuItem.Click += new System.EventHandler(this.pinToolStripMenuItem_Click);
+			this.chooseFontToolStripMenuItem.Name = "chooseFontToolStripMenuItem";
+			this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.chooseFontToolStripMenuItem.Text = "Choose Font";
+			this.chooseFontToolStripMenuItem.Click += new System.EventHandler(this.chooseFontToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -328,6 +337,7 @@
 		private System.Windows.Forms.ToolStripMenuItem historicalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pinToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem chooseFontToolStripMenuItem;
 	}
 }
 

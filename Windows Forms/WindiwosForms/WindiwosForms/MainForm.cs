@@ -245,5 +245,11 @@ namespace WindiwosForms
 			else
 				TopMost = pinToolStripMenuItem.Checked = true;
 		}
+
+		private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ChooseFont dialog = new ChooseFont();
+			dialog.ShowDialog();
+		}
 	}
 }

@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CooseFont.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CooseFont.Designer.cs">
+      <DependentUpon>CooseFont.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,6 +67,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CooseFont.resx">
+      <DependentUpon>CooseFont.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
