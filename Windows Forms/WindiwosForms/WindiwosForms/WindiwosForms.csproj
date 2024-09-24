@@ -54,6 +54,12 @@
     <Compile Include="CooseFont.Designer.cs">
       <DependentUpon>CooseFont.cs</DependentUpon>
     </Compile>
+    <Compile Include="Alarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Alarm.Designer.cs">
+      <DependentUpon>Alarm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +75,9 @@
     </Compile>
     <EmbeddedResource Include="CooseFont.resx">
       <DependentUpon>CooseFont.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Alarm.resx">
+      <DependentUpon>Alarm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -116,6 +125,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon\IconClock.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icon\note_thepin.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icon\NeedleLeftYellow.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

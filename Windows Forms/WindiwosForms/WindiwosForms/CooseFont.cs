@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindiwosForms
 {
 	public partial class ChooseFont : Form
 	{
+		MainForm owner;
 		public ChooseFont()
 		{
 			InitializeComponent();
@@ -27,13 +22,18 @@ namespace WindiwosForms
 			{
 				comboBoxFont.Items.Add(files[i].Split('\\').Last());
 			}
-
-
-
-
+			//comboBoxFont.SelectedIndex = 1;
+		}
+		public ChooseFont(MainForm owner):this()
+		{
+			this.owner = owner;
 		}
 
 		private void comboBoxFont_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetFontParameters();
+		}
+		void SetFontParameters()
 		{
 			PrivateFontCollection pfc = new PrivateFontCollection();
 			pfc.AddFontFile(comboBoxFont.SelectedItem.ToString());
@@ -44,7 +44,13 @@ namespace WindiwosForms
 
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
-			
+			owner.LabelTime.Font = labelSample.Font;
+			Close();
+		}
+
+		private void numericUpDown_ValueChanged(object sender, EventArgs e)
+		{
+			SetFontParameters();
 		}
 	}
 }

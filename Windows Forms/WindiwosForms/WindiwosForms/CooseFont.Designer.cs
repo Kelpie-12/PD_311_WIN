@@ -102,7 +102,7 @@
             0});
 			this.numericUpDown.Location = new System.Drawing.Point(332, 56);
 			this.numericUpDown.Maximum = new decimal(new int[] {
-            24,
+            56,
             0,
             0,
             0});
@@ -119,6 +119,7 @@
             0,
             0,
             0});
+			this.numericUpDown.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
 			// 
 			// label3
 			// 

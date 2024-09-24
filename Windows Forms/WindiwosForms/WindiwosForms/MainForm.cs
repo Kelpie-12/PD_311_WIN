@@ -5,18 +5,23 @@ using System.Drawing.Text;
 using System.IO;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace WindiwosForms
 {
 	public partial class MainForm : Form
 	{
+		public System.Windows.Forms.Label LabelTime { get => labelTime;}
 		bool controlsVisible;
 		MemoryStream fontStream;
-
+		ChooseFont ChooseFontdialog;
+		Alarm alarm;
+		public System.Windows.Forms.Label Label { get => labelTime; }
 		public MainForm()
 		{
 			InitializeComponent();
+			
 			//controlsVisible = true;
 			SetControlsVisibility(false);
 			StartPosition = FormStartPosition.Manual;
@@ -24,7 +29,8 @@ namespace WindiwosForms
 			int start_y = 75;
 			Location = new Point(start_x, start_y);
 
-
+			ChooseFontdialog = new ChooseFont(this);
+			alarm = new Alarm();
 			AllocConsole();
 			CreateCustomFont();
 		}
@@ -87,7 +93,7 @@ namespace WindiwosForms
 			//this.Show();
 			//WindowState = FormWindowState.Normal;
 			controlsVisible = showControlToolStripMenuItem.Checked;
-			OpenToolStripMenuItem.Checked= !controlsVisible;
+			OpenToolStripMenuItem.Checked = !controlsVisible;
 			SetControlsVisibility(!controlsVisible);
 		}
 
@@ -111,6 +117,10 @@ namespace WindiwosForms
 			TopMost = !visible;
 			showControlToolStripMenuItem.Checked = visible;
 			controlsVisible = visible;
+			cbPin.Visible = visible;
+			cbPin.Checked = true;
+			bAlarm.Visible = visible;
+
 		}
 
 
@@ -241,15 +251,51 @@ namespace WindiwosForms
 		private void pinToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TopMost == true)
-				TopMost = pinToolStripMenuItem.Checked = false;
+			{
+				TopMost = pinToolStripMenuItem.Checked = cbPin.Checked = false;
+		
+			}
 			else
-				TopMost = pinToolStripMenuItem.Checked = true;
+			{
+				TopMost = pinToolStripMenuItem.Checked = cbPin.Checked = true;
+			}
 		}
 
 		private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ChooseFont dialog = new ChooseFont();
-			dialog.ShowDialog();
+			ChooseFontdialog = new ChooseFont(this);
+			ChooseFontdialog.ShowDialog();
+
+		}
+
+		private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void cbPin_CheckedChanged(object sender, EventArgs e)
+		{
+
+			if (cbPin.Checked)
+			{
+				cbPin.BackgroundImage = Properties.Resources.note_thepin;
+
+			}
+			else
+			{
+				cbPin.BackgroundImage = Properties.Resources.NeedleLeftYellow;
+			}
+			pinToolStripMenuItem.Checked = cbPin.Checked;
+			TopMost = cbPin.Checked;
+			//cbPin.BackgroundImage = Properties.Resources.NeedleLeftYellow;
+
+
+		}
+
+		private void bAlarm_Click(object sender, EventArgs e)
+		{
+			
+			alarm.ShowDialog();
 		}
 	}
 }
