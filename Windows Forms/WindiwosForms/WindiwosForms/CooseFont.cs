@@ -9,7 +9,7 @@ namespace WindiwosForms
 {
 	public partial class ChooseFont : Form
 	{
-		MainForm owner;
+		public MainForm owner;
 		public ChooseFont()
 		{
 			InitializeComponent();
@@ -45,7 +45,7 @@ namespace WindiwosForms
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
 			owner.LabelTime.Font = labelSample.Font;
-			Close();
+			Close();			
 		}
 
 		private void numericUpDown_ValueChanged(object sender, EventArgs e)

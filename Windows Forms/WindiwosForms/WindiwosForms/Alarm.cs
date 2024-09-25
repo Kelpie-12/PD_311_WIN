@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindiwosForms
@@ -18,6 +12,13 @@ namespace WindiwosForms
 		string hourNow = "";
 		string minutesNow = "";
 		string secondsNow = "";
+		private string timerN;
+
+		public string TimerN
+		{
+			get { return $"{hour}:{minutes}:{seconds}"; }
+		}
+
 
 		public Alarm()
 		{

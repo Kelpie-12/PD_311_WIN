@@ -6,22 +6,23 @@ using System.IO;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace WindiwosForms
 {
 	public partial class MainForm : Form
 	{
-		public System.Windows.Forms.Label LabelTime { get => labelTime;}
+		public System.Windows.Forms.Label LabelTime { get => labelTime; }
 		bool controlsVisible;
 		MemoryStream fontStream;
 		ChooseFont ChooseFontdialog;
 		Alarm alarm;
+
 		public System.Windows.Forms.Label Label { get => labelTime; }
 		public MainForm()
 		{
 			InitializeComponent();
-			
 			//controlsVisible = true;
 			SetControlsVisibility(false);
 			StartPosition = FormStartPosition.Manual;
@@ -31,13 +32,14 @@ namespace WindiwosForms
 
 			ChooseFontdialog = new ChooseFont(this);
 			alarm = new Alarm();
+			
 			AllocConsole();
 			CreateCustomFont();
 		}
-		//~MainForm()
-		//{
-		//	pfc.Dispose();
-		//}
+		void TimerTic()
+		{
+			notifyIcon1.Text = alarm.TimerN;
+		}
 		void CreateCustomFont()
 		{
 			Console.WriteLine(Directory.GetCurrentDirectory());
@@ -211,8 +213,8 @@ namespace WindiwosForms
 
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Close();
+		{			
+			Close();		
 		}
 
 
@@ -253,7 +255,7 @@ namespace WindiwosForms
 			if (TopMost == true)
 			{
 				TopMost = pinToolStripMenuItem.Checked = cbPin.Checked = false;
-		
+
 			}
 			else
 			{
@@ -294,8 +296,9 @@ namespace WindiwosForms
 
 		private void bAlarm_Click(object sender, EventArgs e)
 		{
-			
-			alarm.ShowDialog();
+			alarm.ShowDialog();			
 		}
+
+
 	}
 }
