@@ -18,7 +18,8 @@ namespace WindiwosForms
 		MemoryStream fontStream;
 		ChooseFont ChooseFontdialog;
 		Alarm alarm;
-
+		AlarmForm alarmForm;
+		public DateTime alarmTime { get; set; }
 		public System.Windows.Forms.Label Label { get => labelTime; }
 		public MainForm()
 		{
@@ -32,14 +33,11 @@ namespace WindiwosForms
 
 			ChooseFontdialog = new ChooseFont(this);
 			alarm = new Alarm();
-			
+			alarmForm = new AlarmForm(this);
+		
 			AllocConsole();
 			CreateCustomFont();
-		}
-		void TimerTic()
-		{
-			notifyIcon1.Text = alarm.TimerN;
-		}
+		}	
 		void CreateCustomFont()
 		{
 			Console.WriteLine(Directory.GetCurrentDirectory());
@@ -54,12 +52,24 @@ namespace WindiwosForms
 		}
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
+			const string timeFormat = "hh:mm:ss tt";
+			const string dateFormat = "yyyy:MM:dd";
+			labelTime.Text = DateTime.Now.ToString(timeFormat);
 			if (cbShowDate.Checked)
 			{
-				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy:MM:dd")}";
+				labelTime.Text += $"\n{DateTime.Now.ToString(dateFormat)}";
 			}
 			notifyIcon1.Visible = true;
+			DateTime curTine = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerSecond);
+            Console.WriteLine($"{alarmTime.TimeOfDay}\t{curTine}");
+            if (alarmTime.Equals(curTine))
+			{
+				MessageBox.Show("ALARMMMMMM!!");
+			}
+			//if (labelTime.Text==alarmTime.ToString(timeFormat))
+			//{
+			//	MessageBox.Show("ALARMMMMMM!!");
+			//}
 		}
 
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -299,6 +309,9 @@ namespace WindiwosForms
 			alarm.ShowDialog();			
 		}
 
-
+		private void alarmToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			alarmForm.ShowDialog();
+		}
 	}
 }

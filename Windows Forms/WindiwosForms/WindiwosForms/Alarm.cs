@@ -49,11 +49,11 @@ namespace WindiwosForms
 				
 
 				if (TextHour.Text == "")
-					MessageBox.Show("Установить часы");
+					{ MessageBox.Show("Установить часы"); return; }
 				if (TextMin.Text == "")
-					MessageBox.Show("Установить минуты");
+					{ MessageBox.Show("Установить минуты"); return; }
 				if (TextSec.Text == "")
-					MessageBox.Show("Установить секунды");
+					{ MessageBox.Show("Установить секунды"); return; }
 
 				buttonStart.BackColor = Color.LavenderBlush;
 				buttonStart.Text = "Stop";
