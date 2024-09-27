@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Printing;
+using System.Threading.Tasks;
 using System.Drawing.Text;
 using System.IO;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Timers;
 using System.Windows.Forms;
+using Microsoft.Win32;
+
 
 namespace WindiwosForms
 {
@@ -19,11 +18,15 @@ namespace WindiwosForms
 		ChooseFont ChooseFontdialog;
 		Alarm alarm;
 		AlarmForm alarmForm;
+		public System.Windows.Forms.NotifyIcon NotifyIcon { get => notifyIcon1; }
+		public string AlarmFile { get; set; }
 		public DateTime alarmTime { get; set; }
 		public System.Windows.Forms.Label Label { get => labelTime; }
+		StreamWriter sw;
 		public MainForm()
 		{
 			InitializeComponent();
+			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			//controlsVisible = true;
 			SetControlsVisibility(false);
 			StartPosition = FormStartPosition.Manual;
@@ -34,13 +37,17 @@ namespace WindiwosForms
 			ChooseFontdialog = new ChooseFont(this);
 			alarm = new Alarm();
 			alarmForm = new AlarmForm(this);
-		
-			AllocConsole();
+			RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if (rk.GetValue("WindiwosForms") != null)
+				loadOnWindowsStartToolStripMenuItem.Checked = true;
+			//AllocConsole();
 			CreateCustomFont();
-		}	
+			sw = new StreamWriter("session.log");
+		}
 		void CreateCustomFont()
 		{
 			Console.WriteLine(Directory.GetCurrentDirectory());
+			Directory.SetCurrentDirectory(Application.ExecutablePath.Substring(0,Application.ExecutablePath.LastIndexOf('\\')));
 			Directory.SetCurrentDirectory("..\\..\\Fonts");
 			Console.WriteLine(Directory.GetCurrentDirectory());
 
@@ -49,6 +56,18 @@ namespace WindiwosForms
 			Font font = new Font(pfc.Families[0], labelTime.Font.Size);
 			labelTime.Font = font;
 			pfc.Dispose();
+		}
+
+		void SetStartup(bool autostart = false)
+		{
+			//autostart = 
+			RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if (autostart/*loadOnWindowsStartToolStripMenuItem.Checked*/)
+				rk.SetValue("WindiwosForms", Application.ExecutablePath);
+			else
+				rk.DeleteValue("WindiwosForms", false);
+
+			rk.Dispose();
 		}
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -61,15 +80,14 @@ namespace WindiwosForms
 			}
 			notifyIcon1.Visible = true;
 			DateTime curTine = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerSecond);
-            Console.WriteLine($"{alarmTime.TimeOfDay}\t{curTine}");
-            if (alarmTime.Equals(curTine))
+			Console.WriteLine($"{alarmTime.TimeOfDay}\t{curTine}");
+			if (alarmTime.Equals(curTine))
 			{
-				MessageBox.Show("ALARMMMMMM!!");
+				//	MessageBox.Show("ALARMMMMMM!!");
+				axWindowsMediaPlayer.URL = AlarmFile;
+				axWindowsMediaPlayer.Ctlcontrols.play();
 			}
-			//if (labelTime.Text==alarmTime.ToString(timeFormat))
-			//{
-			//	MessageBox.Show("ALARMMMMMM!!");
-			//}
+
 		}
 
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -79,8 +97,12 @@ namespace WindiwosForms
 			notifyIcon1.Text = "Clock";
 		}
 
-		private void MainForm_Load(object sender, EventArgs e)
+		async void MainForm_Load(object sender, EventArgs e)
 		{
+			for (Opacity = 0; Opacity < 1; Opacity += 0.01)
+			{
+				await Task.Delay(10);
+			}
 			this.Show();
 			notifyIcon1.Visible = false;
 			WindowState = FormWindowState.Normal;
@@ -132,6 +154,7 @@ namespace WindiwosForms
 			cbPin.Visible = visible;
 			cbPin.Checked = true;
 			bAlarm.Visible = visible;
+			axWindowsMediaPlayer.Visible = visible;
 
 		}
 
@@ -223,8 +246,8 @@ namespace WindiwosForms
 
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-		{			
-			Close();		
+		{
+			Close();
 		}
 
 
@@ -306,12 +329,22 @@ namespace WindiwosForms
 
 		private void bAlarm_Click(object sender, EventArgs e)
 		{
-			alarm.ShowDialog();			
+			alarm.ShowDialog();
 		}
 
 		private void alarmToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			alarmForm.ShowDialog();
+		}
+
+		private void loadOnWindowsStartToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
+		{
+			SetStartup(loadOnWindowsStartToolStripMenuItem.Checked);
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+
 		}
 	}
 }

@@ -31,6 +31,7 @@
 			this.dateTimePickerAlarm = new System.Windows.Forms.DateTimePicker();
 			this.bAlarmOk = new System.Windows.Forms.Button();
 			this.bAlarmCansel = new System.Windows.Forms.Button();
+			this.buttonBrowse = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// dateTimePickerAlarm
@@ -68,6 +69,18 @@
 			this.bAlarmCansel.Text = "Cansel";
 			this.bAlarmCansel.UseVisualStyleBackColor = true;
 			// 
+			// buttonBrowse
+			// 
+			this.buttonBrowse.AutoSize = true;
+			this.buttonBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.buttonBrowse.Location = new System.Drawing.Point(98, 120);
+			this.buttonBrowse.Name = "buttonBrowse";
+			this.buttonBrowse.Size = new System.Drawing.Size(93, 35);
+			this.buttonBrowse.TabIndex = 3;
+			this.buttonBrowse.Text = "Browse";
+			this.buttonBrowse.UseVisualStyleBackColor = true;
+			this.buttonBrowse.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// AlarmForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -75,6 +88,7 @@
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(298, 167);
+			this.Controls.Add(this.buttonBrowse);
 			this.Controls.Add(this.bAlarmCansel);
 			this.Controls.Add(this.bAlarmOk);
 			this.Controls.Add(this.dateTimePickerAlarm);
@@ -93,5 +107,6 @@
 		private System.Windows.Forms.DateTimePicker dateTimePickerAlarm;
 		private System.Windows.Forms.Button bAlarmOk;
 		private System.Windows.Forms.Button bAlarmCansel;
+		private System.Windows.Forms.Button buttonBrowse;
 	}
 }
