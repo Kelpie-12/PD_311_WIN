@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace Clock
 {
@@ -15,9 +9,11 @@ namespace Clock
 	{
 		MainForm owner;
 		string filename;
+		internal CheckedListBox CheckedListBoxPendingAlarms { get => checkedListBoxPendingAlarms; }
 		public AlarmDialog()
 		{
 			InitializeComponent();
+
 		}
 		public AlarmDialog(MainForm owner) : this()
 		{
@@ -44,9 +40,13 @@ namespace Clock
 		{
 			try
 			{
-				checkedListBoxPendingAlarms.Items.Add(new Alarm(dateTimePickerAlarmTime.Value, filename), true);
-				List<Alarm> alarms = new List<Alarm>(checkedListBoxPendingAlarms.Items.OfType<Alarm>().ToList());
-				Console.WriteLine(alarms.Min());
+				Alarm alarm = new Alarm(dateTimePickerAlarmTime.Value, filename);
+				List<Alarm> all_alarms = new List<Alarm>(checkedListBoxPendingAlarms.Items.OfType<Alarm>().ToList());
+				if (!all_alarms.Contains(alarm))
+					checkedListBoxPendingAlarms.Items.Add(new Alarm(dateTimePickerAlarmTime.Value, filename), true);
+				Console.WriteLine(all_alarms.Min());
+				List<Alarm> activ_alarms = new List<Alarm> ( checkedListBoxPendingAlarms.CheckedItems.OfType<Alarm>().ToList());
+				owner.Alarm = activ_alarms.Min();
 			}
 			catch (Exception ex)
 			{
